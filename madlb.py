@@ -1,53 +1,68 @@
-# Read the file and save it to a variable
-user_results =[]
+import re
 
-def readFile():
-    file = open("make_me_a_video_game.txt", "rb")
-    text_value = file.read()
-    print(text_value)
-    mad_array = []
-    # Define
-    txt = text_value.split()
+# Set default template
+madlib_result= ""
+madlib_words=[]
+madlib_template=""
 
-    madlib_list = {'Adjective1': '',
-                   'Adjective2': '',
-                   'A First Name': '',
-                   'Adjective3': '',
-                   'Adjective4': '',
-                   'Large Animal': '',
-                   'Small Animal': '',
-                   "A Girl's Name": '',
-                   'Adjective5': ''
-                   }
+def read_template(filepath="dark_and_stormy_night.txt"):
+    try:
+        file = open(filepath, "r")
 
-    for line in madlib_list:
-        ask(line)
+        madlib_template = file.read().strip()
+        file.close()
+        parse_template(madlib_template)
+
+    except FileNotFoundError as fe:
+        #Notify user of error
+        print(f'Sorry. {fe.strerror}')
 
 
 
 
+def parse_template(madlib_template):
+    regex = r"{(.*?)}"
+    words = []
+    try:
+
+    #Original reference
+        regex = r'(w+)s*[^{]*{s*([^}]+)s*}'
+            # printing original string https://www.geeksforgeeks.org/python-extract-substrings-between-brackets/
+        print("The original string is : " + madlib_template)
+
+            # Extract substrings between brackets
+            # Using regex
+        words = re.findall(r'\{.*?\}', madlib_template)
+
+
+            # printing result
+       # print("The element between brackets : " + str(words))
 
 
 
-# Prompt the user to submit a series of words to fit each of the required components of the Madlib template.
-def welcome(text_value,madlib_list):
-    user_input = input(f'Welcome to Madlib. Enter {len(madlib_list)} words:')
-    replace(text_value)
-    # for q in madlib_list:
-    #     selection = input(f'+ Choose a {q}: ')
+    except TypeError:
+        print(TypeError.__str__())
+    #return string and tuple
     #
+    finally:
 
+        merge(words,madlib_template)
+def merge(words,template):
+    # Loop through extracted words and prompt user for input
+    for x in words:
+        user_input = input(f'Enter a/an {x}:')
+        madlib_words.append(user_input)
+        print(f'{x}: {user_input}')
 
-# # Replace template values
-def replace(new_text, old_text):
-    return text
-    #for description in madlib_list:
-# print(madlib_list)
+        #Save the user's imput
+        filedata = template.replace(x, user_input,1)
+        template = filedata
 
-def ask(q):
-    user_input=input(f'* Select a/an {q} ')
-    user_results.append(user_input)
-    print(user_results.index())
-    replace(q, user_input)
+    # Write to new file   template = filedata
+    f = open("dark_and_stormy_night_output.txt", "w")
+    f.write(filedata)
+    f.close()
 
-readFile()
+    print(filedata)
+
+read_template()
